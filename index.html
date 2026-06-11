@@ -107,7 +107,7 @@
     </div>
 
     <script>
-        // 定義所有的選項資料 (大幅增加選項、移除插圖、加入流行風格)
+        // 定義所有的選項資料
         const config = [
             {
                 id: 'outfit',
@@ -115,11 +115,18 @@
                 icon: '👘',
                 type: 'single',
                 options: [
-                    { label: '公主' }, { label: '王子' }, { label: '古裝' }, 
-                    { label: '旗袍' }, { label: '唐裝' }, { label: '韓服' }, 
-                    { label: '和服' }, { label: '歐洲宮廷服' }, { label: '紳士西裝' }, 
-                    { label: '貴婦洋裝' }, { label: '休閒運動服' }, { label: '登山休閒裝' },
-                    { label: '魔法師長袍' }, { label: '復古迪斯可' }, { label: '科技未來裝' }
+                    // 女性與唯美華麗風格
+                    { label: '公主' }, { label: '仙女裝' }, { label: '白紗禮服' }, 
+                    { label: '華麗晚禮服' }, { label: '貴婦洋裝' }, { label: '碎花洋裝' }, { label: '氣質套裝' },
+                    // 傳統與民族服飾
+                    { label: '旗袍' }, { label: '古裝' }, { label: '韓服' }, { label: '和服' }, 
+                    { label: '歐洲宮廷服' }, { label: '歌仔戲服' }, { label: '原住民服飾' },
+                    // 男性與帥氣風格
+                    { label: '王子' }, { label: '皇帝龍袍' }, { label: '唐裝' }, { label: '中山裝' }, 
+                    { label: '功夫裝' }, { label: '紳士西裝' }, { label: '帥氣軍裝' }, { label: '西部牛仔裝' }, 
+                    // 休閒與特色風格
+                    { label: '復古吊帶褲' }, { label: '夏威夷花襯衫' }, { label: '休閒運動服' }, 
+                    { label: '登山休閒裝' }, { label: '魔法師長袍' }, { label: '科技未來裝' }
                 ]
             },
             {
@@ -160,6 +167,18 @@
                     { label: '新海誠動畫風' }, { label: '精緻剪紙藝術' }, { label: '玻璃彩繪' },
                     { label: '素描速寫' }, { label: '印象派油畫' }, { label: '夢幻童話風' }
                 ]
+            },
+            {
+                id: 'background',
+                title: '5. 背景選擇',
+                icon: '🌅',
+                type: 'single',
+                options: [
+                    { label: '純白背景' }, { label: '彩色漸層背景' }, { label: '夢幻星空背景' },
+                    { label: '大自然風景背景' }, { label: '溫馨室內背景' }, { label: '喜慶紅色背景' },
+                    { label: '淡雅水墨背景' }, { label: '春暖花開背景' }, { label: '海灘夕陽背景' },
+                    { label: '純色粉紅背景' }, { label: '復古斑駁牆面背景' }, { label: '簡約純黑背景' }
+                ]
             }
         ];
 
@@ -168,7 +187,8 @@
             outfit: '',
             emotion: '',
             action: [], // 陣列，支援多選
-            artStyle: ''
+            artStyle: '',
+            background: '' // 新增背景狀態
         };
 
         // 初始化介面
@@ -184,13 +204,12 @@
                 header.innerHTML = `<span class="text-2xl">${category.icon}</span><h2 class="text-2xl font-bold text-slate-700">${category.title}</h2>`;
                 section.appendChild(header);
 
-                // 按鈕網格 (調整為更密集的排版，以容納更多純文字按鈕)
+                // 按鈕網格
                 const grid = document.createElement('div');
                 grid.className = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3';
 
                 category.options.forEach(opt => {
                     const btn = document.createElement('button');
-                    // 基本樣式 (移除 flex-col 和 gap，讓文字居中顯示)
                     btn.className = `option-btn w-full bg-slate-50 hover:bg-slate-100 border-2 border-slate-200 text-slate-700 font-bold py-2 px-2 rounded-xl text-center shadow-sm transition-colors text-[15px]`;
                     btn.innerHTML = `<span>${opt.label}</span>`;
                     
@@ -265,7 +284,7 @@
                 details.push(`動作是 ${actionStr}`);
             }
 
-            // 組合句子
+            // 組合主要細節句子
             if (details.length > 0) {
                 promptParts.push("，" + details.join("，"));
             } else {
@@ -274,10 +293,15 @@
 
             // 加上風格
             if (state.artStyle) {
-                promptParts.push(`，整體為 [${state.artStyle}] 畫風。`);
-            } else {
-                promptParts.push(`。`);
+                promptParts.push(`，整體為 [${state.artStyle}] 畫風`);
             }
+
+            // 加上背景設定
+            if (state.background) {
+                promptParts.push(`，背景為 [${state.background}]`);
+            }
+
+            promptParts.push(`。`);
 
             // 顯示在文字框
             const finalPrompt = promptParts.join('');
